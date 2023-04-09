@@ -8,7 +8,7 @@ non_push_suffix="_local"
 latestTag=$(git describe --long | awk -F"-" '{print $1}')
 output=$(git log ${latestTag}..HEAD --format=%B%H----DELIMITER----)
 
-# split commits by delimiter and format them
+# # split commits by delimiter and format them
 IFS=$'\n'
 commitsArray=($(echo "$output" | sed 's/----DELIMITER----//g'))
 features=()
@@ -65,7 +65,8 @@ if [ $retcode -eq 0 ] ; then
         echo
         git add -A;
         git commit -m "chore: Bump to version $newVersion"
-        git tag -a -m "Tag for version $newVersion" "version$newVersion"        echo "Tagged with $NEW_TAG"
+        git tag -a -m "Tag for version $newVersion" "version$newVersion"       
+        echo "Tagged with $NEW_TAG"
         git push --tags
         echo
         echo "**** Pushing current branch $branch_name to origin [i4h post-commit hook]"
