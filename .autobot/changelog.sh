@@ -1,5 +1,9 @@
 #!/bin/bash
 
+branch_name=$(git symbolic-ref --short HEAD)
+retcode=$?
+non_push_suffix="_local"
+
 # get latest tag and commit messages
 latestTag=$(git describe --long | awk -F"-" '{print $1}')
 output=$(git log ${latestTag}..HEAD --format=%B%H----DELIMITER----)
@@ -44,7 +48,19 @@ echo -e "$newChangelog$currentChangelog" > ./CHANGELOG.md
 echo "{\"version\": \"$newVersion\"}" > ./version.json
 
 # create a new commit, tag and push changes
-git add .
-git commit -m "chore: Bump to version $newVersion"
-git tag -a -m "Tag for version $newVersion" "version$newVersion"
-git push origin master --tags
+if [ $retcode -eq 0 ] ; then
+    #Only push if branch_name does not end with the non-push suffix
+    if [[ $branch_name != *$non_push_suffix ]] ; then
+        echo
+        echo "**** Commit changes $branch_name"
+        echo
+        git add -A;
+        git commit -m "chore: Bump to version $newVersion"
+        git tag -a -m "Tag for version $newVersion" "version$newVersion"        echo "Tagged with $NEW_TAG"
+        git push --tags
+        echo
+        echo "**** Pushing current branch $branch_name to origin [i4h post-commit hook]"
+        echo
+        git push origin $branch_name;
+    fi
+fi
