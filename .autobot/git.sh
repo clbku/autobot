@@ -4,7 +4,16 @@ branch_name=$(git symbolic-ref --short HEAD)
 retcode=$?
 non_push_suffix="_local"
 
-NEW_TAG="v0.0.1"
+uncommitted=$(git status -s)
+
+if [[ "$uncommitted" != "" ]]; then
+    echo "Need commit first"
+    exit
+fi
+
+# generate change log
+
+sh ./changelog.sh
 
 # Only push if branch_name was found (my be empty if in detached head state)
 if [ $retcode -eq 0 ] ; then
