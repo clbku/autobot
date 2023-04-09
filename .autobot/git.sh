@@ -16,6 +16,7 @@ fi
 sh ./changelog.sh
 
 # Only push if branch_name was found (my be empty if in detached head state)
+# create a new commit, tag and push changes
 if [ $retcode -eq 0 ] ; then
     #Only push if branch_name does not end with the non-push suffix
     if [[ $branch_name != *$non_push_suffix ]] ; then
@@ -23,8 +24,8 @@ if [ $retcode -eq 0 ] ; then
         echo "**** Commit changes $branch_name"
         echo
         git add -A;
-        git commit -m "build: v0.0.0";
-        git tag $NEW_TAG
+        git commit -m "chore: Bump to version $newVersion"
+        git tag -a -m "Tag for version $newVersion" "version$newVersion"       
         echo "Tagged with $NEW_TAG"
         git push --tags
         echo
@@ -32,4 +33,4 @@ if [ $retcode -eq 0 ] ; then
         echo
         git push origin $branch_name;
     fi
-fi
+f

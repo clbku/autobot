@@ -12,7 +12,6 @@ fixes=()
 
 for commit in "${commitsArray[@]}"; do
   message=$(echo "$commit" | head -1)
-  sha=$(echo "$commit" | tail -1)
 
   if [[ "$message" == feature:* ]]; then
     features+=("* $(echo "$message" | sed 's/^feature: //')")
