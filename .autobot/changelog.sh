@@ -24,8 +24,8 @@ for commit in "${commitsArray[@]}"; do
 done
 
 # create new version and changelog
-currentChangelog=$(cat ./CHANGELOG.md)
-currentVersion=$(node -p "require('./package.json').version")
+currentChangelog=$(cat ../CHANGELOG.md)
+currentVersion=$(node -p "require('./version.json').version")
 newVersion=$((currentVersion + 1))
 newChangelog="# Version $newVersion ($(date "+%Y-%m-%d"))\n\n"
 
@@ -41,7 +41,7 @@ fi
 echo -e "$newChangelog$currentChangelog" > ./CHANGELOG.md
 
 # update package.json
-echo "{\"version\": \"$newVersion\"}" | jq . > ./package.json
+echo "{\"version\": \"$newVersion\"}" > ./version.json
 
 # create a new commit, tag and push changes
 git add .
