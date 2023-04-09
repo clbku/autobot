@@ -12,8 +12,7 @@ if [[ "$uncommitted" != "" ]]; then
 fi
 
 # generate change log
-
-sh ./changelog.sh
+sh ././autobot/changelog.sh
 
 # Only push if branch_name was found (my be empty if in detached head state)
 # create a new commit, tag and push changes
