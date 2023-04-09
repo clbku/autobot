@@ -13,6 +13,7 @@ IFS=$'\n'
 commitsArray=($(echo "$output" | sed 's/----DELIMITER----//g'))
 features=()
 chores=()
+fixes=()
 
 for commit in "${commitsArray[@]}"; do
   message=$(echo "$commit" | head -1)
@@ -24,6 +25,10 @@ for commit in "${commitsArray[@]}"; do
 
   if [[ "$message" == chore:* ]]; then
     chores+=("* $(echo "$message" | sed 's/^chore: //') ([${sha:0:6}](https://github.com/jackyef/changelog-generator/commit/$sha))")
+  fi
+
+  if [[ "$message" == fix:* ]]; then
+    fixes+=("* $(echo "$message" | sed 's/^chore: //') ([${sha:0:6}](https://github.com/jackyef/changelog-generator/commit/$sha))")
   fi
 done
 
@@ -39,6 +44,10 @@ fi
 
 if [[ ${#chores[@]} -gt 0 ]]; then
   newChangelog+="## Chores\n${chores[*]}\n\n"
+fi
+
+if [[ ${#fixes[@]} -gt 0 ]]; then
+  newChangelog+="## Bug fixed\n${fixes[*]}\n\n"
 fi
 
 # prepend new changelog to existing one
