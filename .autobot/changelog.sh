@@ -24,7 +24,7 @@ for commit in "${commitsArray[@]}"; do
 done
 
 # create new version and changelog
-currentChangelog=$(cat ../CHANGELOG.md)
+currentChangelog=$(cat ./CHANGELOG.md)
 currentVersion=$(node -p "require('./package.json').version")
 newVersion=$((currentVersion + 1))
 newChangelog="# Version $newVersion ($(date "+%Y-%m-%d"))\n\n"
@@ -38,10 +38,10 @@ if [[ ${#chores[@]} -gt 0 ]]; then
 fi
 
 # prepend new changelog to existing one
-echo -e "$newChangelog$currentChangelog" > ../CHANGELOG.md
+echo -e "$newChangelog$currentChangelog" > ./CHANGELOG.md
 
 # update package.json
-echo "{\"version\": \"$newVersion\"}" | jq . > ../package.json
+echo "{\"version\": \"$newVersion\"}" | jq . > ./package.json
 
 # create a new commit, tag and push changes
 git add .
