@@ -20,15 +20,15 @@ for commit in "${commitsArray[@]}"; do
   sha=$(echo "$commit" | tail -1)
 
   if [[ "$message" == feature:* ]]; then
-    features+=("* $(echo "$message")")
+    features+=("* $(echo "$message" | sed 's/^feature: //')")
   fi
 
   if [[ "$message" == chore:* ]]; then
-    chores+=("* $(echo "$message")")
+    chores+=("* $(echo "$message" | sed 's/^chore: //')")
   fi
 
   if [[ "$message" == fix:* ]]; then
-    fixes+=("* $(echo "$message")")
+    fixes+=("* $(echo "$message" | sed 's/^chore: //')")
   fi
 done
 
@@ -58,21 +58,21 @@ echo -e "$newChangelog$currentChangelog" > ./CHANGELOG.md
 # update package.json
 echo "{\"version\": \"$newVersion\"}" > ./version.json
 
-# # create a new commit, tag and push changes
-# if [ $retcode -eq 0 ] ; then
-#     #Only push if branch_name does not end with the non-push suffix
-#     if [[ $branch_name != *$non_push_suffix ]] ; then
-#         echo
-#         echo "**** Commit changes $branch_name"
-#         echo
-#         git add -A;
-#         git commit -m "chore: Bump to version $newVersion"
-#         git tag -a -m "Tag for version $newVersion" "version$newVersion"       
-#         echo "Tagged with $NEW_TAG"
-#         git push --tags
-#         echo
-#         echo "**** Pushing current branch $branch_name to origin [i4h post-commit hook]"
-#         echo
-#         git push origin $branch_name;
-#     fi
-# fi
+# create a new commit, tag and push changes
+if [ $retcode -eq 0 ] ; then
+    #Only push if branch_name does not end with the non-push suffix
+    if [[ $branch_name != *$non_push_suffix ]] ; then
+        echo
+        echo "**** Commit changes $branch_name"
+        echo
+        git add -A;
+        git commit -m "chore: Bump to version $newVersion"
+        git tag -a -m "Tag for version $newVersion" "version$newVersion"       
+        echo "Tagged with $NEW_TAG"
+        git push --tags
+        echo
+        echo "**** Pushing current branch $branch_name to origin [i4h post-commit hook]"
+        echo
+        git push origin $branch_name;
+    fi
+fi
