@@ -20,23 +20,25 @@ for commit in "${commitsArray[@]}"; do
   sha=$(echo "$commit" | tail -1)
 
   if [[ "$message" == feature:* ]]; then
-    features+=("* $(echo "$message" | sed 's/^feature: //') ([${sha:0:6}](https://github.com/jackyef/changelog-generator/commit/$sha))")
+    features+=("* $(echo "$message")")
   fi
 
   if [[ "$message" == chore:* ]]; then
-    chores+=("* $(echo "$message" | sed 's/^chore: //') ([${sha:0:6}](https://github.com/jackyef/changelog-generator/commit/$sha))")
+    chores+=("* $(echo "$message")")
   fi
 
   if [[ "$message" == fix:* ]]; then
-    fixes+=("* $(echo "$message" | sed 's/^chore: //') ([${sha:0:6}](https://github.com/jackyef/changelog-generator/commit/$sha))")
+    fixes+=("* $(echo "$message")")
   fi
 done
 
 # create new version and changelog
-currentChangelog=$(cat ../CHANGELOG.md)
+currentChangelog=$(cat ./CHANGELOG.md)
 currentVersion=$(node -p "require('./version.json').version")
 newVersion=$((currentVersion + 1))
 newChangelog="# Version $newVersion ($(date "+%Y-%m-%d"))\n\n"
+
+echo $currentChangelog
 
 if [[ ${#features[@]} -gt 0 ]]; then
   newChangelog+="## Features\n${features[*]}\n\n"
@@ -56,21 +58,21 @@ echo -e "$newChangelog$currentChangelog" > ./CHANGELOG.md
 # update package.json
 echo "{\"version\": \"$newVersion\"}" > ./version.json
 
-# create a new commit, tag and push changes
-if [ $retcode -eq 0 ] ; then
-    #Only push if branch_name does not end with the non-push suffix
-    if [[ $branch_name != *$non_push_suffix ]] ; then
-        echo
-        echo "**** Commit changes $branch_name"
-        echo
-        git add -A;
-        git commit -m "chore: Bump to version $newVersion"
-        git tag -a -m "Tag for version $newVersion" "version$newVersion"       
-        echo "Tagged with $NEW_TAG"
-        git push --tags
-        echo
-        echo "**** Pushing current branch $branch_name to origin [i4h post-commit hook]"
-        echo
-        git push origin $branch_name;
-    fi
-fi
+# # create a new commit, tag and push changes
+# if [ $retcode -eq 0 ] ; then
+#     #Only push if branch_name does not end with the non-push suffix
+#     if [[ $branch_name != *$non_push_suffix ]] ; then
+#         echo
+#         echo "**** Commit changes $branch_name"
+#         echo
+#         git add -A;
+#         git commit -m "chore: Bump to version $newVersion"
+#         git tag -a -m "Tag for version $newVersion" "version$newVersion"       
+#         echo "Tagged with $NEW_TAG"
+#         git push --tags
+#         echo
+#         echo "**** Pushing current branch $branch_name to origin [i4h post-commit hook]"
+#         echo
+#         git push origin $branch_name;
+#     fi
+# fi
