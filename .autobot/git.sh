@@ -12,7 +12,7 @@ if [[ "$uncommitted" != "" ]]; then
 fi
 
 # generate change log
-sh ././autobot/changelog.sh
+sh ./.autobot/changelog.sh
 
 # Only push if branch_name was found (my be empty if in detached head state)
 # create a new commit, tag and push changes
@@ -32,4 +32,4 @@ if [ $retcode -eq 0 ] ; then
         echo
         git push origin $branch_name;
     fi
-f
+fi
